@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>LOOTDOG</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif" rel="stylesheet">
+    <script type="text/javascript" src="//d1l4stvdmqmdzl.cloudfront.net/3.9.6/mongoose.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div class="goods">
+        <div class="goods-shadow">
+            <div class="goods-box">
+              <!--<div class="goods-item">H&K G36K «Антизомби» (1д.)</div>
+              <div class="goods-item">H&K G36K «Антизомби» (1д.)</div>-->
+              <div class="goods-item" v-for="good in listGoods" @click="drawChat(good)">{{good}}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart">
+        <canvas id="Chart" width="1000" height="400"></canvas>
+    </div>
+
+    <div class="settings">
+      <div class="period_settings">
+        <div style="padding: 5px 10px;">Период:</div>
+        <div class="period_item" @click="set_minus_days(1)">{{minusDays === 1 ? "• " : ''}}сутки</div>
+        <div class="period_item" @click="set_minus_days(2)">{{minusDays === 2 ? "• " : ''}}2 дня</div>
+        <div class="period_item" @click="set_minus_days(7)">{{minusDays === 7 ? "• " : ''}}неделя</div>
+        <div class="period_item" @click="set_minus_days(30)">{{minusDays === 30 ? "• " : ''}}месяц</div>
+        <div class="period_item" @click="set_minus_days(183)">{{minusDays === 183 ? "• " : ''}}полгода</div>
+        <div class="period_item" @click="set_minus_days(365)">{{minusDays === 365 ? "• " : ''}}год</div>
+      </div>
+        <div class="settings_foot">
+            <div class="period_of_parsing">
+                <div>Период парсинга <i style="font-size: 0.8em; color: rgba(0,0,0,0.51);"> (в минутах)  </i>:</div>
+                <input class="input_settings" type="text" v-model="period_parsing">
+                <input class="parse_button"  type="button" value="ОК" @click="save_settings">
+            </div>
+            <div class="period-box">
+                <h4>Настройки уведомлений:</h4>
+                <div class="settings-notifications">
+                    <div class="settings-notifications-item">
+                        <p>проценты:</p>
+                        <input class="input" type="text" v-model="percents_to_notification">
+                        <input class="parse_button"  type="button" value="ОК" @click="save_settings">
+                    </div>
+                    <div class="settings-notifications-item">
+                        <p>срок <i> (в днях)  </i>:</p>
+                        <input class="input_settings" type="text" v-model="days_to_notification">
+                        <input class="parse_button"  type="button" value="ОК" @click="save_settings">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+  </div>
+</body>
+
+    <script src="./script.js"></script>
+
+</html>
