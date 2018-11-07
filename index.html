@@ -9,24 +9,81 @@
     <link rel="stylesheet" type="text/css" href="./style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Noto+Serif" rel="stylesheet">
-    <script type="text/javascript" src="//d1l4stvdmqmdzl.cloudfront.net/3.9.6/mongoose.js"></script>
+    <script type="text/javascript" src="http://d1l4stvdmqmdzl.cloudfront.net/3.9.6/mongoose.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </head>
 
 <body>
   <div id="app">
-    <div class="goods">
-        <div class="goods-shadow">
-            <div class="goods-box">
-              <!--<div class="goods-item">H&K G36K «Антизомби» (1д.)</div>
-              <div class="goods-item">H&K G36K «Антизомби» (1д.)</div>-->
-              <div class="goods-item" v-for="good in listGoods" @click="drawChat(good)">{{good}}</div>
+    <div class="left-bar">
+        <div class="search">
+            <input type="text" placeholder="Поиск" v-model="search_string">
+        </div>
+        <div class="goods-box">
+            <h4>{{show_now ? "Товары": "Забаненные"}}</h4>
+            <div v-if="show_now">
+              <div style="position: relative; z-index: 0" class="goods-item" v-for="good in listGoods"  v-if="good.toLowerCase().includes(search_string.toLowerCase()) && !black_list.includes(good)"  >
+                  <p style="text-align: center; width: 90%; margin: 0;" @click="drawChat(good)">{{good}}</p>
+                  <img
+                      src="https://cdn2.iconfinder.com/data/icons/diagona/icon/16/150.png"
+                      alt="favourite"
+                      style="float: right; position:absolute; top: 30%; right: 0; z-index: 999"
+                      @click="add_to_black_list(good)"
+                  >
+              </div>
+            </div>
+            <div v-else>
+                <div style="position: relative; z-index: 0" class="goods-item" v-for="good in black_list"  v-if="good.toLowerCase().includes(search_string.toLowerCase())"  >
+                    <p style="text-align: center; width: 90%; margin: 0;" @click="drawChat(good)">{{good}}</p>
+                    <img
+                            src="https://cdn2.iconfinder.com/data/icons/diagona/icon/16/150.png"
+                            alt="favourite"
+                            style="float: right; position:absolute; top: 30%; right: 0; z-index: 999"
+                            @click="add_to_black_list(good)"
+                    >
+                </div>
             </div>
         </div>
+        <h2 style="text-align: center; margin: 1vh 0">Настройки</h2>
+        <div class="settings-left">
+            <div class="settings-box">
+                <div class="period">
+                    <u><h4 style="text-align: center; margin: 0">Период парсинга (мин)</h4></u>
+                    <input class="input_settings" type="text" v-model="period_parsing" @keyup.enter="save_settings">
+                </div>
+                <div class="notifications">
+                    <u><h5 style="margin: 1% 0; text-align: center">Настройки уведомлений</h5></u>
+                    <div class="set-box">
+                        <p>При средней цене за (дн)</p>
+                        <input class="input_settings" type="text" v-model="days_to_notification" @keyup.enter="save_settings">
+                    </div>
+                    <div class="set-box">
+                        <p>Предмет вырос на %</p>
+                        <input class="input_settings" type="text" v-model="low_percents_to_notification" @keyup.enter="save_settings">
+                    </div>
+                    <div class="set-box">
+                        <p>Предмет упал на %</p>
+                        <input class="input_settings" type="text" v-model="high_percents_to_notification" @keyup.enter="save_settings">
+                    </div>
+                    <div class="appear">
+                        <label for="appear">Увед-е появился/пропал</label>
+                        <input type="checkbox" id="appear" value="value" v-model="note_appear_good" @keyup.enter="save_settings">
+                    </div>
+                    <div class="apply" @click="save_settings">
+                        Применить настройки
+                    </div>
+                    <div class="apply" @click="show_now = !show_now">
+                        {{show_now ? "Открыть забаненные" : "Вернуться к товарам"}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <div class="chart">
-        <canvas id="Chart" width="1000" height="400"></canvas>
+        <canvas id="Chart" width="900" height="300"></canvas>
+        <canvas id="chart_sales" width="900" height="300" style="z-index: 999"></canvas>
     </div>
 
     <div class="settings">
@@ -39,29 +96,6 @@
         <div class="period_item" @click="set_minus_days(183)">{{minusDays === 183 ? "• " : ''}}полгода</div>
         <div class="period_item" @click="set_minus_days(365)">{{minusDays === 365 ? "• " : ''}}год</div>
       </div>
-        <div class="settings_foot">
-            <div class="period_of_parsing">
-                <div>Период парсинга <i style="font-size: 0.8em; color: rgba(0,0,0,0.51);"> (в минутах)  </i>:</div>
-                <input class="input_settings" type="text" v-model="period_parsing">
-                <input class="parse_button"  type="button" value="ОК" @click="save_settings">
-            </div>
-            <div class="period-box">
-                <h4>Настройки уведомлений:</h4>
-                <div class="settings-notifications">
-                    <div class="settings-notifications-item">
-                        <p>проценты:</p>
-                        <input class="input" type="text" v-model="percents_to_notification">
-                        <input class="parse_button"  type="button" value="ОК" @click="save_settings">
-                    </div>
-                    <div class="settings-notifications-item">
-                        <p>срок <i> (в днях)  </i>:</p>
-                        <input class="input_settings" type="text" v-model="days_to_notification">
-                        <input class="parse_button"  type="button" value="ОК" @click="save_settings">
-                    </div>
-
-                </div>
-            </div>
-        </div>
 
     </div>
   </div>

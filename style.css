@@ -14,25 +14,109 @@ body {
 }
 
 
-.goods {
+.left-bar {
     position: absolute;
     height: 100%;
-    width: 20vw;
+    width: 25vw;
 }
+
+.search {
+    width: 100%;
+    height: 7%;
+}
+
+.search input{
+    margin: 2vh 0 0 6vw ;
+    padding: 5px 15px;
+    width: 100px;
+    height: 20px;
+    outline: none;
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 10px;
+    background: rgba(85, 85, 85, 0.2);
+}
+
+.notifications input {
+    margin: 2% auto;
+    padding: 5px 15px;
+    width: 10%;
+    height: 20px;
+    outline: none;
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 10px;
+    background: rgba(85, 85, 85, 0.2);
+}
+
+.period input {
+    margin: 5% 35%;
+    padding: 5px 15px;
+    width: 20%;
+    height: 20px;
+    text-align: center;
+    outline: none;
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 10px;
+    background: rgba(85, 85, 85, 0.2);
+}
+
+.set-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+
+.notifications p{
+    font-size: .7em;
+    width: 60%;
+    margin: 0;
+    text-align: center;
+}
+
+.appear {
+    width: 60%;
+    margin: 0 20%;
+}
+
+
+.appear label {
+    font-size: .8em;
+    width: 60%;
+    margin: 0;
+    text-align: center;
+}
+
+
+.settings-left {
+    margin: 0;
+    background: rgba(204, 219, 219, 0.28);
+    height: 40%;
+}
+
+.settings-box {
+    height: 90%;
+    overflow-y: scroll;
+
+}
+
 
 .goods-shadow {
     width: 90%;
-    height: 90%;
+    height: 50%;
     margin: 5% 5%;
     box-shadow: 0 0 10px 0  rgba(0,0,0,0.6);
     background: rgba(204, 219, 219, 0.28);
 }
 
 .goods-box {
+    margin-top: 5%;
     width: 90%;
-    height: 90%;
+    height: 35%;
     padding: 5% 5%;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background: rgba(204, 219, 219, 0.28);
 }
 
 .goods-item {
@@ -44,6 +128,18 @@ body {
     border-bottom: 1px dotted #000;
 }
 
+.goods-item img {
+    display: block;
+
+}
+
+.goods-item img:hover {
+    transform: translateY(-4px);
+    padding: 3px;
+    background: rgba(149, 149, 149, 0.72);
+    border-radius: 50%;
+}
+
 .goods-item:hover {
     cursor: pointer;
     box-shadow: 0 0 5px 0  rgba(0,0,0,0.6);
@@ -53,7 +149,7 @@ body {
 .chart {
     position: absolute;
     top: 2vh;
-    left: 25vw;
+    left: 30vw;
 /*    width: 70vw;
     height: 60vw;*/
 }
@@ -63,26 +159,42 @@ body {
     height: 50%;
 }
 
+.apply {
+    margin: 1vh auto;
+    height: auto;
+    width: 60%;
+    text-align: center;
+    font-style: italic;
+    background: rgba(180, 180, 180, 0.51);
+    border-radius: 37%;
+    padding: 5px 0;
+    cursor: pointer;
+}
+
+.apply:active {
+
+    transform: translateY(3px);
+}
 
 .settings {
     position: absolute;
     left: 25vw;
     bottom: 5vh;
     width: 70vw;
-    height: 20vh;
+    height: 5vh;
 
 }
 
-.period_settings {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+.period {
+    height: 30%;
 }
 
 .period_item {
     padding: 5px 10px;
     background: rgba(0, 0, 0, 0.16);
     border-radius: 15px;
+    width: 80px;
+    text-align: center;
 }
 
 .period_item:hover {
@@ -93,6 +205,15 @@ body {
     transform: translateY(2px);
 }
 
+
+.period_settings {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
 
 .period_of_parsing {
     display: flex;
@@ -144,7 +265,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-goods-boxcontent: flex-start;
 }
 
 h4 {

@@ -25,8 +25,26 @@ connection.once('open', function () {
             collection.findOne({key: 'secret'}, function (err, data) {
                 if (err) return console.log(err);
                 data.period_parsing = req.body.period_parsing;
-                data.percents_to_notification = req.body.percents_to_notification;
+                data.low_percents_to_notification = req.body.low_percents_to_notification;
+                data.high_percents_to_notification = req.body.high_percents_to_notification;
                 data.days_to_notification = req.body.days_to_notification;
+                data.note_appear_good = req.body.note_appear_good;
+
+                collection.save(data, function (err, data) {
+                    res.send(data);
+                });
+            });
+        });
+
+        app.post('/black_list', function (req, res) {
+            collection.findOne({key: 'secret'}, function (err, data) {
+                if (err) return console.log(err);
+
+                if(req.body.status){
+                    data.black_list.push(req.body.item_name);
+                } else {
+                    data.black_list.splice(data.black_list.indexOf(req.body.item_name), 1);
+                }
 
                 collection.save(data, function (err, data) {
                     res.send(data);
@@ -34,6 +52,8 @@ connection.once('open', function () {
 
             });
         });
+
+
 
 
 
@@ -64,7 +84,6 @@ connection.once('open', function () {
         app.post('/good_statistics', function (req, res) {
             let startDate = new Date();
             startDate.setDate(startDate.getDate() - req.body.minusDays);
-            console.log(startDate.getDate());
             collection.find({
                 item_name: req.body.item_name,
                 date: {"$gte": startDate, "$lt": new Date()}
@@ -105,11 +124,32 @@ connection.once('open', function () {
                             fill: false
                         }
                     ];
+                    let in_sale_sold = [
+                        {
+                            data: [],
+                            label: "В продаже",
+                            borderColor: "#1971ff",
+                            fill: false
+                        },
+                        {
+                            data: [],
+                            label: "Продано за день",
+                            borderColor: "#ef2c09",
+                            fill: false
+                        }
+                    ];
 
                     data.forEach(function (good) {
                        // labels
-                        tempLabels.push(good.date.getHours().toString()+':'+good.date.getMinutes().toString());
+                        if(req.body.minusDays === 1){
+                            tempLabels.push(good.date.getHours().toString()+':'+good.date.getMinutes().toString());
+                        } else {
+                            tempLabels.push(good.date.getDate().toString()+'.'+good.date.getMonth().toString()+' '+good.date.getHours().toString()+':'+good.date.getMinutes().toString());
+                        }
 
+                        // в продаже/продано
+                        in_sale_sold[0].data.push(good.count_on_sale_now);
+                        in_sale_sold[1].data.push(good.sold_today);
 
                        //  datasets
                         datasets[0].data.push(good.prices[0]);
@@ -119,12 +159,15 @@ connection.once('open', function () {
                         datasets[4].data.push(good.prices[4]);
                     });
 
+
+
                     for(let i = 0; i < tempLabels.length; i += req.body.minusDays){
                         labels.push(tempLabels[i])
                     }
                     res.send({
                         labels,
-                        datasets
+                        datasets,
+                        in_sale_sold
                     });
             })
         });
@@ -139,5 +182,5 @@ connection.once('open', function () {
 
 
 app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
+    console.log('app listening on port 3000!');
 });
